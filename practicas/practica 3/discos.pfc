@@ -1,0 +1,155 @@
+program hd;
+var
+	P2R,PR1,EM,PR2: semaphore;
+	contp2r,A1,A2,contpr1,contpr2: integer;
+
+process type D12;
+begin
+		wait(EM);
+		if((A1=0) and (A2=0)) then
+		begin
+			A1:=1;
+			A2:=1;
+                        writeln('Disco 1 y Disco 2 ocupados',A1,A2);
+			Signal(P2R);
+		end
+		else
+		begin
+			contp2r:=contp2r+1;
+		end;
+		signal(EM);
+		wait(P2R);
+
+                sleep(random(3));
+		wait(EM);
+		A1:=0;
+		A2:=0;
+                writeln('discos 1 y 2 libres',A1,A2);
+		if (contp2r>0) then
+		begin
+			signal(P2R);
+                        A1:=1;
+		        A2:=1;
+                        writeln('Disco 1 y Disco 2 ocupados',A1,A2);
+			contp2r:=contp2r-1;
+		end
+		else
+             begin
+             if (contpr1>0) then
+		   begin
+			signal(PR1);
+                        A1:=1;
+                        writeln('Disco 1 ocupado',A1);
+			contpr1:=contpr1-1;
+             end;
+		  if (contpr2>0) then
+		  begin
+			signal(PR2);
+                        A2:=1;
+                        writeln('Disco 2 ocupado',A2);
+			contpr2:=contpr2-1;
+             end;
+           end;
+	signal(EM);
+end;
+
+process type D1;
+begin
+		wait(EM);
+		if(A1=0) then
+		begin
+			A1:=1;
+                        writeln('disco 1 ocupado',A1);
+			signal(PR1);
+		end
+		else
+		begin
+			contpr1:=contpr1+1;
+		end;
+		signal(EM);
+		wait(PR1);
+
+                sleep(random(3));
+		wait(EM);
+		A1:=0;
+                writeln('disco 1  libre',A1);
+		if ((A2=0)and(contp2r>0)) then
+		begin
+			signal(P2R);
+                        A1:=1;
+                        A2:=1;
+                        writeln('Disco 1 y Disco 2 ocupados',A1,A2);
+			contp2r:=contp2r-1;
+		end
+		else
+		begin
+			if (contpr1>0) then
+			begin
+				signal(PR1);
+                                A1:=1;
+                                writeln('Disco 1 ocupado',A1);
+				contpr1:=contpr1-1;
+			end;
+		end;
+		signal(EM);
+
+end;
+
+process type D2;
+begin
+		wait(EM);
+		if(A2=0) then
+		begin
+			A2:=1;
+                        writeln('disco 2 ocupado',A2);
+			signal(PR2);
+		end
+		else
+		begin
+			contpr2:=contpr2+1;
+		end;
+		signal(EM);
+                sleep(random(3));
+		wait(PR2);
+		wait(EM);
+		A2:=0;
+                writeln('disco 2 libre',A2);
+		if ((A1=0)and(contp2r>0)) then
+		begin
+			signal(P2R);
+                        A1:=1;
+                        A2:=1;
+                        writeln('Disco 1 y Disco 2 ocupados',A1,A2);
+			contp2r:=contp2r-1;
+		end
+		else
+		begin
+			if (contpr2>0) then
+			begin
+				signal(PR2);
+                                A2:=1;
+                                writeln('Disco 2 ocupado',A2);
+				contpr2:=contpr2-1;
+			end;
+		end;
+		signal(EM);
+end;
+
+
+var db1,db2,db3,db4:D1;
+dc1,dc2,dc3,dc4:D2;
+dd1,dd2,dd3,dd4:D12;
+
+begin
+        A1:=0;
+        A2:=0;
+	initial(EM,1);
+	initial(PR1,0);
+	initial(PR2,0);
+	initial(P2R,0);
+	cobegin
+        db1;db2;db3;db4;
+        dc1;dc2;dc3;dc4;
+        dd1;dd2;dd3;dd4;
+	coend;
+end.

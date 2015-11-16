@@ -1,0 +1,88 @@
+program ordenatodo;
+var vector:array[0..9] of integer;
+    i,j:integer;
+
+
+process ordenaone;
+var i,x,j:integer;
+
+begin
+
+     for i:= 1 to 4 do
+     begin
+          for j:=0 to 4-i do
+          begin
+               if vector[j]>vector[j+1] then
+               begin
+                    x:=vector[j];
+                    vector[j]:=vector [j+1];
+                    vector[j+1]:=x;
+               end;
+          end;
+     end;
+end;
+
+
+process ordenatwo;
+var s,t,y:integer;
+
+begin
+
+  for s:= 1 to 4 do
+     begin
+          for t:=5 to 9-s do
+          begin
+               if vector[t]>vector[t+1] then
+               begin
+                    y:=vector[t];
+                    vector[t]:=vector [t+1];
+                    vector[t+1]:=y;
+               end;
+          end;
+     end;
+
+end;
+
+procedure ordenavector;
+var s,t,y:integer;
+
+begin
+
+  for s:= 1 to 9 do
+     begin
+          for t:=0 to 9-s do
+          begin
+               if vector[t]>vector[t+1] then
+               begin
+                    y:=vector[t];
+                    vector[t]:=vector [t+1];
+                    vector[t+1]:=y;
+               end;
+          end;
+     end;
+
+end;
+
+
+(********************************************************principal*)
+begin
+
+j:=9;
+for i:=0 to 9 do
+begin (* se inicializa el vector*)
+     vector[i]:=j;
+     j:=j-1;
+end;
+
+
+cobegin
+       ordenaone;
+       ordenatwo;
+coend;
+      ordenavector;
+      writeln('vector ordenado:');
+      for i:=0 to 9 do
+      begin
+           writeln(vector[i]);
+      end;
+end.

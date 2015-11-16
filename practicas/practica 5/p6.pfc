@@ -1,0 +1,69 @@
+program p6;
+
+
+
+const
+n=2;
+
+var
+
+canales:array[1..n,1..n] of channel of integer;
+sincro:channel of synchronous;
+
+
+
+process type proceso(id, minumero: integer);
+
+var
+iguales,i,j,recibido,enviado,sunumero:integer;
+llamado:array[1..n] of boolean;
+
+
+begin
+  recibido:=0;
+  enviado:=0;
+  write('mi id es: ',id);
+  i:=1;
+  iguales:=1;
+  for i:=1 to n do
+      llamado[i]:=false;
+  llamado[id]:=true;
+  repeat
+  begin
+     select
+      for i:=1 to n replicate
+      when (i<>id) =>
+            canales[i,id]?sunumero;
+            writeln('soy',id,'y me llama',i);
+            recibido:=recibido+1;
+            if(sunumero=minumero)then iguales:=iguales+1;
+     or
+      for j:=1 to n replicate
+      when llamado[j]=false =>
+      canales[id,j]!minumero;
+      writeln('soy',id,'y me llama',j);
+      enviado:=enviado+1;
+      llamado[j]:=true;
+     or
+      terminate;
+     end;
+  end;
+  until((enviado>=n-1)and(recibido>=n-1));
+  writeln('mi id es:',id,'hay ',iguales,'con el valor',minumero);
+end;
+
+
+
+var
+p1,p2,p3,p4,p5:proceso;
+
+begin
+
+cobegin
+p1(1,random(3));
+p2(2,random(3));
+(*p3(3,random(3));
+p4(4,random(3));
+p5(5,random(3));*)
+coend;
+end.

@@ -1,0 +1,114 @@
+program primos;
+const
+	n=100;
+type
+	numeros=array[2..n] of integer;
+var
+	vector: numeros;
+	j: integer;
+
+
+
+
+
+process primoone ;
+var
+x,y,a: integer;
+enco: boolean;
+begin
+        a:= 2;
+	repeat (*repetir*)
+	begin
+		if(vector[a]=0)then
+		begin
+			x:=2;
+			enco:=true;
+			repeat
+			begin
+				if(a Mod x =0)then
+				begin
+					enco:=false;
+				end;
+				x:=x+1;
+			end;
+			until((enco=false)or(x=a));
+			if(x>=a) then
+			begin
+				writeln(a);
+				vector[a]:=2; (*es primo*)
+				y:=2;
+				while(a*y<=50) do
+				begin
+					vector[a*y]:=1; (*no es primo*)
+					y:=y+1;
+				end;
+			end;
+		end;
+		a:=a+1;
+	end;
+	until(a=50); (*hasta que a=50*)
+end;
+
+
+
+process primotwo ;
+var
+x,y,c: integer;
+enco: boolean;
+begin
+        c:= 51;
+	repeat (*repetir*)
+	begin
+		if(vector[c]=0)then
+		begin
+			x:=2;
+			enco:=true;
+			repeat
+			begin
+				if(c Mod x=0)then
+				begin
+					enco:=false;
+				end;
+				x:=x+1;
+			end;
+			until((enco=false)or(x=c));
+			if(x>=c) then
+			begin
+				writeln(c);
+				vector[c]:=2;
+				y:=2;
+				while(c*y<=100) do
+				begin
+					vector[c*y]:=1;
+					y:=y+1;
+				end;
+			end;
+		end;
+		c:=c+1;
+	end;
+	until(c=100); (*hasta que c=100*)
+end;
+
+
+
+
+
+
+
+
+
+
+begin
+(*se inicializa el vector a 0*)
+	for j:=2 to n do
+	begin
+		vector[j]:=0;
+	end;
+
+	writeln('Los numeros primos entre 2 y',n,' son:');
+
+	cobegin
+		primoone;
+		primotwo;
+	coend;
+end.

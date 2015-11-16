@@ -1,0 +1,94 @@
+program ejer1;
+
+var
+leer,sumar,escr,recibido: semaphore;
+sum,k,num: integer;
+vector: array[0..14] of integer;
+leido:boolean;
+
+
+
+(*lee datos numéricos de un array*)
+process lee;
+var
+i: integer;
+begin
+	i:=0;
+	repeat
+	begin
+		wait(leer);
+		num:= vector[i];
+		signal(sumar);
+		i:=i+1;
+	end;
+	until(i>14);
+	leido:=true;
+end;
+
+
+(*toma esos datos y los suma de 5 en 5*)
+process suma;
+var
+i: integer;
+begin
+	repeat
+	begin
+		sum:=0;
+		i:=0;
+		repeat
+		begin
+			wait(sumar);
+			sum:=sum + num;
+			i:= i+1;
+			signal(leer);
+		end;
+		until(i>4);
+		signal(escr);
+		wait(recibido);
+	end;
+	until(leido=true);
+end;
+
+
+(*toma los resultados de estas sumas y los escribe en otro array*)
+process guarda;
+var 
+	vectorsuma: array[0..2] of integer;
+	j:integer;
+begin
+	j:=0;
+	repeat
+	begin
+		wait(escr);
+		vectorsuma[j]:=sum;
+		write(' ',vectorsuma[j]);
+		signal(recibido);
+		j:=j+1;
+	end;
+	until(leido=true);
+end;
+
+
+
+
+(*---------------principal----------------*)
+begin
+	leido:=false;
+	(* se inicializa el array*)
+	for k:=0 to 14 do vector[k]:=1;
+
+	(*inicializa los semaforos*)
+	initial(leer,1);
+	initial(escr,0);
+	initial(sumar,0);
+	initial(recibido,0);
+
+	cobegin
+		lee;
+		suma;
+		guarda;
+	coend;
+	
+end.
+		
+

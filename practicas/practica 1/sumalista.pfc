@@ -1,0 +1,89 @@
+program sumalista;
+
+type  mivector=array[0..24] of integer;
+
+ var vector:mivector;
+    suma:integer;
+    i,j,k,l,m:integer;
+    suma1:integer;
+ suma2:integer;
+ suma3:integer;
+ suma4:integer;
+ suma5:integer;
+
+(*///////////////////////////suma 1///////////*)
+process sumap1;
+begin
+suma1:=0;
+for i:=0 to 4 do
+       begin
+          suma1:=suma1+vector[i];
+       end;
+     writeln('suma de 1 es:',suma1);
+end;
+ (*///////////////////////////suma 2///////////*)
+process sumapa2;
+begin
+suma2:=0;
+for j:=5 to 9 do
+       begin
+          suma2:=suma2+vector[j];
+       end;
+     writeln('suma de 2 es:',suma2);
+end;
+ (*///////////////////////////suma 3///////////*)
+process sumapar3;
+begin
+suma3:=0;
+for k:=10 to 14 do
+       begin
+          suma3:=suma3+vector[k];
+       end;
+     writeln('suma de 3 es:',suma3);
+end;
+ (*///////////////////////////suma 4///////////*)
+process sumaparc4;
+begin
+suma4:=0;
+for l:=15 to 19 do
+       begin
+          suma4:=suma4+vector[l];
+       end;
+     writeln('suma de 4 es:',suma4);
+end;
+ (*///////////////////////////suma 5///////////*)
+process sumaparci5;
+begin
+suma5:=0;
+for m:=20 to 24 do
+       begin
+          suma5:=suma5+vector[m];
+       end;
+     writeln('suma de 5 es:',suma5);
+end;
+
+
+
+
+
+begin
+     suma:=0;
+
+     for i:=0 to 24 do
+       begin
+          vector[i]:=1;
+       end;
+
+     cobegin
+            sumap1;
+            sumapa2;
+            sumapar3;
+            sumaparc4;
+            sumaparci5;
+     coend;
+
+	suma:=suma1+suma2+suma3+suma4+suma5;
+
+	writeln('La suma total es: ',suma);
+end.
+

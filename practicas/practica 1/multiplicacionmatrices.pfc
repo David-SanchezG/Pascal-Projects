@@ -1,0 +1,114 @@
+program matrices;
+
+
+type
+	matriz=array[0..2,0..2] of integer;
+var
+	matriz1: matriz;
+	matriz2: matriz;
+	matriz3: matriz;
+	i,j,f2,b: integer; (*parasumafila2 *)
+        f1,r,s,t:integer ; (*para sumafila1*)
+        f3,k,l,m:integer;(*parasumafila3*)
+        a :integer;
+
+procedure inicializarm1;
+begin
+	for i:=0 to 2 do
+	begin
+		for j:=0 to 2 do
+			begin
+				matriz1[i,j]:=i+j;
+                                write('      ',matriz1[i,j]);
+			end;
+                        writeln('      ');
+	end;
+end;
+
+
+procedure ini2;(*inicializa la matriz2*)
+var
+k,l: integer;
+begin
+	for k:=0 to 2 do
+	begin
+		for l:=0 to 2 do
+			begin
+				matriz2[k,l]:=k+l;
+                                write('      ',matriz2[k,l]);
+			end; writeln('      ');
+	end;
+end;
+
+
+process sumaf1;
+
+begin
+
+f1:=0;
+               for r:=0 to 2 do
+		begin
+			s:=0; (* la j guarda  *)
+			for t:=0 to 2 do
+			begin
+				s:=s+matriz1[f1,t]*matriz2[t,r];
+			end;
+			matriz3[f1,r]:=s;
+
+		end;
+
+end;
+
+process sumaf2;
+begin
+f2:=1;
+               for b:=0 to 2 do
+		begin
+			j:=0;
+			for i:=0 to 2 do
+			begin
+				j:=j+matriz1[f2,i]*matriz2[i,b];
+			end;
+			matriz3[f2,b]:=j;
+
+		end;
+end;
+
+
+process sumaf3;
+begin
+f3:=2;
+               for k:=0 to 2 do
+		begin
+			l:=0;
+			for m:=0 to 2 do
+			begin
+				l:=l+matriz1[f3,m]*matriz2[m,k];
+			end;
+			matriz3[f3,k]:=l;
+
+		end;
+end;
+
+
+
+begin
+
+	inicializarm1;
+	ini2;
+
+        cobegin
+               sumaf1;
+               sumaf2;
+               sumaf3;
+        coend;
+        for a:=0 to 2 do
+        begin
+             for b:=0 to 2 do
+             begin
+                  write('	',matriz3[a,b]);
+             end;
+             writeln('	');
+        end;
+end.
+

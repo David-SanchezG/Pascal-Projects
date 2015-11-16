@@ -1,0 +1,129 @@
+program lobosycorderos;
+var
+nlobos,ncorderos:integer;
+
+monitor lago;
+export llegarbeberlobo,llegarcordero,irselobo,irsecordero;
+
+var
+lobos,corderos,corderosir:condition;
+
+procedure llegarbeberlobo;
+begin
+	if (ncorderos=1) then (*si hay un cordero bebiendo *)
+        begin
+	delay(lobos);
+      end;
+      nlobos:=nlobos+1;
+      writeln('el lobo',nlobos,' bebe');
+end;
+
+procedure llegarcordero;
+begin
+          (*si hay 10 corderos o 0 corderos y algun lobo*)
+          if(ncorderos=10)or((ncorderos=0) and (nlobos>0) and (empty(corderos))) then
+          begin
+		delay(corderos);
+          end;
+             (*si hay 0 corderos y algun lobo y hay corderos en la cola se desbloquea un cordero*)
+          if((ncorderos=0) and (nlobos>0) and (not empty(corderos))) then
+	  begin
+             resume(corderos);
+          end;
+
+	ncorderos:=ncorderos+1;
+        writeln('el cordero',ncorderos,' bebe');
+(*si hay mas de un cordero y algun lobo esperando se desbloquea*)
+	if((not empty(lobos)) and (ncorderos>1)) then
+		resume(lobos);
+        if(ncorderos>2)and(not empty(corderosir))then resume(corderosir);
+end;
+
+procedure irselobo;
+begin
+	writeln('el lobo',nlobos,' se va');
+	nlobos:=nlobos-1;
+(*si hay corderos esperando y no hay lobos se desbloquea un cordero*)
+	if((not empty(corderos))and((nlobos=0)or(ncorderos>1))) then
+		resume(corderos);
+                if((not empty(corderosir))and (nlobos=0)) then
+                resume(corderosir);
+end;
+
+
+procedure irsecordero;
+begin
+        (* si hay dos corderos y se va uno y hay algun lobo*)
+	if ((ncorderos=2) and (nlobos<>0)) then
+	begin
+		if(not empty(corderos)) then
+                begin
+			resume(corderos);
+                end
+                else
+                begin
+                     delay(corderosir);
+                end;
+	end ;
+(*si no hay dos corderos se va el cordero*)
+	writeln('el cordero',ncorderos,' se va');
+	ncorderos:=ncorderos-1;
+        if((not empty(corderosir))and (nlobos=0)) then
+                resume(corderosir);
+
+end;
+
+begin
+      nlobos:=0;
+      ncorderos:=0;
+end;(*fin monitor*)
+
+
+
+
+
+
+
+
+process type cordero;
+begin
+     lago.llegarcordero;
+     lago.irsecordero;
+end;
+
+process type lobo;
+begin
+     lago.llegarbeberlobo;
+     lago.irselobo;
+end;
+
+
+ var
+cordero1,cordero2,cordero3,cordero4,cordero5,cordero6,cordero7,cordero8,cordero9,cordero10:cordero;
+lobo1,lobo2,lobo3,lobo4,lobo5,lobo6,lobo7,lobo8,lobo9,lobo10:lobo;
+
+begin
+
+      cobegin
+     cordero1;
+     cordero2;
+     cordero3;
+     cordero4;
+     cordero5;
+     cordero6;
+     cordero7;
+     cordero8;
+     cordero9;
+     cordero10;
+     lobo1;
+     lobo2;
+     lobo3;
+     lobo4;
+     lobo5;
+     lobo6;
+     lobo7;
+     lobo8;
+     lobo9;
+     lobo10;
+      coend;
+end.

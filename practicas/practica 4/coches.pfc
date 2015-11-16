@@ -1,0 +1,101 @@
+program cochespuente;
+var
+ncder,ncizq:integer;
+
+
+monitor puente;
+export entraderecha,entraizquierda,salederecha,saleizquierda;
+
+var
+cder,cizq:condition;
+
+procedure entraderecha;
+begin
+(*si hay coches por la izquierda se bloquean los coches de la derecha*)
+	if (ncizq<>0)then delay(cder);
+	ncder:=ncder+1;
+	writeln('entra coche por la derecha');
+        (*si hay coches esperando por la derecha se desbloquean*)
+        if (not empty(cder))then
+        begin
+          resume(cder);
+        end;
+
+
+end;
+procedure entraizquierda;
+begin
+(*si hay coches por la derecha se bloquean los coches de la izquierda*)
+	if (ncder<>0)then delay(cizq);
+	ncizq:=ncizq+1;
+	writeln('entra coche por la izquierda');
+        (*si hay coches esperando por la izquierda se desbloquean*)
+        if (not empty(cizq))then
+        begin
+          resume(cizq);
+        end;
+end;
+
+procedure salederecha;
+begin
+          ncder:=ncder-1;
+          writeln('Sale coche de la derecha');
+(*si no hay coches en la derecha y hay coches de la izquierda esperando *)
+(*se desbloquean los coches de la izquierda*)
+          if((ncder=0) and (not empty(cizq)))then
+          begin
+               resume(cizq);
+          end;
+
+end;
+
+procedure saleizquierda;
+begin
+	 ncizq:=ncizq-1;
+         writeln('Sale coche de la izquierda');
+(*si no hay coches en la izquierda y hay coches de la derecha esperando*)
+(* se desbloquean los coches de la derecha*)
+         if((ncizq=0) and (not empty(cder)))then
+         begin
+              resume(cder);
+         end;
+end;
+
+begin
+     ncder:=0;
+     ncizq:=0;
+end; (*fin monitor*)
+
+
+
+
+
+process type cocheder;
+begin
+     sleep(random(5));
+     puente.entraderecha;
+     sleep(2);
+     puente.salederecha;
+end;
+
+process type cocheizq;
+begin
+     sleep(random(5));
+     puente.entraizquierda;
+     sleep(2);
+     puente.saleizquierda;
+end;
+
+
+
+
+var
+   cder1,cder2,cder3,cder4,cder5,cder6,cder7,cder8,cder9,cder10:cocheder;
+   cizq1,cizq2,cizq3,cizq4,cizq5,cizq6,cizq7,cizq8,cizq9,cizq10:cocheizq;
+
+begin
+     cobegin
+            cder1;cder2;cder3;cder4;cder5;cder6;cder7;cder8;cder9;cder10;
+            cizq1;cizq2;cizq3;cizq4;cizq5;cizq6;cizq7;cizq8;cizq9;cizq10;
+     coend;
+end.
